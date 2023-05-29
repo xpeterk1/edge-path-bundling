@@ -15,6 +15,7 @@ Graph Parser::load(std::string nodes_path, std::string edges_path, double d)
 			node_pair = nodes.erase(node_pair);
 		} else 
 		{
+			std::sort(node_pair->second.edges.begin(), node_pair->second.edges.end());
 			node_pair++;
 		}
 	}

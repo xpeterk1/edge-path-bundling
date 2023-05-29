@@ -35,6 +35,4 @@ public:
 	{
 		return this->weight == other.weight;
 	}
-
-	//TODO: other dijkstra related fields
 };

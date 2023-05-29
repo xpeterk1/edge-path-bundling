@@ -48,4 +48,13 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="data\routes-preprocessed.csv" />
+    <None Include="data\routes-ids.csv" />
+    <None Include="data\routes.csv" />
+    <None Include="data\airports-extended.csv" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="data\airports.txt" />
+  </ItemGroup>
 </Project>

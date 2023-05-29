@@ -144,6 +144,15 @@
     <ClInclude Include="parser\parser.h" />
     <ClInclude Include="parser\preprocessing.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="data\airports-extended.csv" />
+    <None Include="data\routes-ids.csv" />
+    <None Include="data\routes-preprocessed.csv" />
+    <None Include="data\routes.csv" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="data\airports.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

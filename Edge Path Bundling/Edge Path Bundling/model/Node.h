@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <climits>
 
 #include "Edge.h"
 
@@ -15,6 +16,11 @@ public:
 	std::string name;
 	std::vector<Edge> edges;
 
+	// dijkstra related fields
+	double distance = DBL_MAX; // -1 = not visited, other value = distance
+	bool visited = false;
+	Node* previous;
+
 public:
 
 	Node(int ID, float longitude, float latitude, std::string name);
@@ -22,12 +28,17 @@ public:
 
 	bool operator <(const Node& other) const
 	{
-		return this->ID < other.ID;
+		return this->distance < other.distance;
+	}
+
+	bool operator >(const Node& other) const
+	{
+		return this->distance > other.distance;
 	}
 
 	bool operator ==(const Node& other) const
 	{
-		return this->ID == other.ID;
+		return this->distance == other.distance;
 	}
 
 };
