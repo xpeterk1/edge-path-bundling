@@ -24,14 +24,14 @@ int main()
 
     Graph g = Parser().load(nodes_path, edges_path, d);
 
-    for (Edge& edge : g.edges)
+    for (auto& edge : g.edges)
     {
-        if (edge.lock) continue;
+        if (edge.get()->lock) continue;
 
-        edge.skip = true;
-        Node& source = g.nodes.at(edge.source_id);
-        Node& dest = g.nodes.at(edge.destination_id);
-
+        edge.get()->skip = true;
+        Node& source = g.nodes.at(edge.get()->source_id);
+        Node& dest = g.nodes.at(edge.get()->destination_id);
+        
         g.find_shortest_path(source, dest);
     }
 }

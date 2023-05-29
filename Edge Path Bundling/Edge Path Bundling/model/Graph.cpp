@@ -1,6 +1,6 @@
 #include "Graph.h"
 
-Graph::Graph(std::map<int, Node>& nodes, std::vector<Edge>& edges, double d)
+Graph::Graph(std::map<int, Node>& nodes, std::vector<std::shared_ptr<Edge>>& edges, double d)
 {
 	this->nodes = nodes;
 	this->edges = edges;
@@ -34,16 +34,16 @@ std::vector<Node*> Graph::find_shortest_path(Node& source, Node& destination)
 		for (auto& e : current->edges)
 		{
 			// skip edges for skip
-			if (e.skip) continue;
+			if (e.get()->skip) continue;
 
 			int other_id;
-			if (e.source_id == source.ID) other_id = e.destination_id;
-			else other_id = e.source_id;
+			if (e.get()->source_id == source.ID) other_id = e.get()->destination_id;
+			else other_id = e.get()->source_id;
 			Node& other = nodes.at(other_id);
 			
 			if (other.visited) continue;
 			
-			double current_distance = current->distance + e.weight;
+			double current_distance = current->distance + e.get()->weight;
 
 			if (current_distance < other.distance) {
 				other.distance = current_distance;
@@ -52,11 +52,11 @@ std::vector<Node*> Graph::find_shortest_path(Node& source, Node& destination)
 			}
 		}
 
-		// sort queue => mimic priority queue
-		std::sort(queue.begin(), queue.end(), std::greater<>());
+	//	// sort queue => mimic priority queue
+	//	std::sort(queue.begin(), queue.end(), std::greater<>());
 
-		// already found the destination
-		if (current == &destination) break;
+	//	// already found the destination
+	//	if (current == &destination) break;
 	}
 
 	// extract path
@@ -64,4 +64,6 @@ std::vector<Node*> Graph::find_shortest_path(Node& source, Node& destination)
 
 	// return empty path, destination was not found
 	if (destination.previous == nullptr) return path;
+
+	return path;
 }

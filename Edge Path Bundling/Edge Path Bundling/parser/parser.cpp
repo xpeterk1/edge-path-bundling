@@ -3,7 +3,7 @@
 Graph Parser::load(std::string nodes_path, std::string edges_path, double d)
 {
 	std::map<int, Node> nodes = load_nodes(nodes_path);
-	std::vector<Edge> edges = load_edges(edges_path);
+	std::vector<std::shared_ptr<Edge>> edges = load_edges(edges_path);
 
 	combine(nodes, edges, d);
 
@@ -21,7 +21,10 @@ Graph Parser::load(std::string nodes_path, std::string edges_path, double d)
 	}
 
 	// sort edges
-	std::sort(edges.begin(), edges.end(), std::greater<>());
+	std::sort(edges.begin(), edges.end(), [](const std::shared_ptr<Edge>& e1, const std::shared_ptr<Edge>& e2) 
+		{
+			return e1.get()->weight < e2.get()->weight;
+		});
 
 	Graph g = Graph(nodes, edges, d);
 	return g;
@@ -76,9 +79,9 @@ std::map<int, Node> Parser::load_nodes(std::string path)
 	return nodes;
 }
 
-std::vector<Edge> Parser::load_edges(std::string path)
+std::vector<std::shared_ptr<Edge>> Parser::load_edges(std::string path)
 {
-	std::vector<Edge> edges = std::vector<Edge>();
+	std::vector<std::shared_ptr<Edge>> edges = std::vector<std::shared_ptr<Edge>>();
 
 	std::ifstream file;
 
@@ -123,7 +126,7 @@ std::vector<Edge> Parser::load_edges(std::string path)
 
 		if (valid)
 		{
-			Edge e = Edge(source_id, destination_id);
+			std::shared_ptr<Edge> e = std::make_shared<Edge>(source_id, destination_id);
 			edges.push_back(e);
 		}
 	}
@@ -131,11 +134,12 @@ std::vector<Edge> Parser::load_edges(std::string path)
 	return edges;
 }
 
-void Parser::combine(std::map<int, Node>& nodes, std::vector<Edge>& edges, double d)
+void Parser::combine(std::map<int, Node>& nodes, std::vector<std::shared_ptr<Edge>>& edges, double d)
 {
+	int counter = 0;
 	for (auto it = edges.begin(); it < edges.end(); ) {
-		int source_id = it->source_id;
-		int dest_id = it->destination_id;
+		int source_id = it->get()->source_id;
+		int dest_id = it->get()->destination_id;
 
 		// either source of destination ID was not found -> remove this edge
 		if (!nodes.contains(source_id) || !nodes.contains(dest_id))
@@ -150,11 +154,14 @@ void Parser::combine(std::map<int, Node>& nodes, std::vector<Edge>& edges, doubl
 		// set distances and weights of the edges
 		double distance = source.distance_to(destination);
 
-		it->set_weight(distance, d);
+		it->get()->set_weight(distance, d);
 
 		// set edges to nodes
-		source.edges.push_back(*it);
-		destination.edges.push_back(*it);
+
+		std::shared_ptr<Edge> ptr(*it);
+		source.edges.push_back(ptr);
+		destination.edges.push_back(ptr);
 		it++;
+		counter++;
 	}
 }

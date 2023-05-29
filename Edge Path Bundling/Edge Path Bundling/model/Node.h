@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <climits>
+#include <memory>
 
 #include "Edge.h"
 
@@ -14,7 +15,7 @@ public:
 	float longitude;
 	float latitude;
 	std::string name;
-	std::vector<Edge> edges;
+	std::vector<std::shared_ptr<Edge>> edges;
 
 	// dijkstra related fields
 	double distance = DBL_MAX; // -1 = not visited, other value = distance

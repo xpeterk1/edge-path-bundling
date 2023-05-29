@@ -21,8 +21,8 @@ public:
 
 private:
 	std::map<int, Node> load_nodes(std::string path);
-	std::vector<Edge> load_edges(std::string path);
-	void combine(std::map<int, Node>& nodes, std::vector<Edge>& edges, double d);
+	std::vector<std::shared_ptr<Edge>> load_edges(std::string path);
+	void combine(std::map<int, Node>& nodes, std::vector<std::shared_ptr<Edge>>& edges, double d);
 
 };
 

@@ -7,7 +7,7 @@ Node::Node(int ID, float longitude, float latitude, std::string name)
 	this->latitude = latitude;
 	this->name = name;
 
-	this->edges = std::vector<Edge>();
+	this->edges = std::vector<std::shared_ptr<Edge>>();
 }
 
 double Node::distance_to(Node& other)
