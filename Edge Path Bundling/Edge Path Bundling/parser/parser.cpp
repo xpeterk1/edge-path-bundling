@@ -23,7 +23,7 @@ Graph Parser::load(std::string nodes_path, std::string edges_path, double d)
 	// sort edges
 	std::sort(edges.begin(), edges.end(), [](const std::shared_ptr<Edge>& e1, const std::shared_ptr<Edge>& e2) 
 		{
-			return e1.get()->weight < e2.get()->weight;
+			return e1.get()->weight > e2.get()->weight;
 		});
 
 	Graph g = Graph(nodes, edges, d);

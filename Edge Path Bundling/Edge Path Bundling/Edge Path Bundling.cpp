@@ -10,6 +10,7 @@ int main()
     std::string nodes_path = "data/airports.txt";
     std::string edges_path = "data/routes-preprocessed.csv";
     float d = 1.2;
+    float k = 3.0;
 
     /*
     This graph is/has:
@@ -32,6 +33,37 @@ int main()
         Node& source = g.nodes.at(edge.get()->source_id);
         Node& dest = g.nodes.at(edge.get()->destination_id);
         
-        g.find_shortest_path(source, dest);
+        // find shortest path using Dijkstra's algorithm
+        std::vector<std::shared_ptr<Edge>> path = g.find_shortest_path(source, dest);
+
+        // no path found
+        if (path.empty())
+        {
+            edge.get()->skip = false;
+            continue;
+        }
+
+        double path_length = 0;
+        for (auto& edge : path) {
+            //TODO: compute length using weight or distance of the edge?
+            path_length += edge.get()->weight;
+        }
+
+        // new detour is more than k-times longer than direct route
+        double original_edge_length = source.distance_to(dest);
+        if (path_length > k * original_edge_length)
+        {
+            edge.get()->skip = false;
+            continue;
+        }
+
+        for (auto& edge : path) {
+            edge.get()->lock = true;
+        }
+
+        //TODO: get path nodes control points
+
+
+
     }
 }

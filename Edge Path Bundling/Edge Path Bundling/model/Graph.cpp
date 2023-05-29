@@ -7,7 +7,7 @@ Graph::Graph(std::map<int, Node>& nodes, std::vector<std::shared_ptr<Edge>>& edg
 	this->d = d;
 }
 
-std::vector<Node*> Graph::find_shortest_path(Node& source, Node& destination)
+std::vector<std::shared_ptr<Edge>> Graph::find_shortest_path(Node& source, Node& destination)
 {
 	// set distances to all nodes to max value
 	for (auto& n : nodes) {
@@ -48,22 +48,36 @@ std::vector<Node*> Graph::find_shortest_path(Node& source, Node& destination)
 			if (current_distance < other.distance) {
 				other.distance = current_distance;
 				other.previous = current;
+				other.previous_edge = e;
 				queue.push_back(&other);
 			}
 		}
 
-	//	// sort queue => mimic priority queue
-	//	std::sort(queue.begin(), queue.end(), std::greater<>());
+		// sort queue => mimic priority queue
+		std::sort(queue.begin(), queue.end(), [](const Node* n1, const Node* n2)
+			{
+				return n1->distance < n2->distance;
+			});
 
-	//	// already found the destination
-	//	if (current == &destination) break;
+		// already visited the destination
+		if (current == &destination) break;
 	}
 
 	// extract path
-	std::vector<Node*> path;
+	std::vector<std::shared_ptr<Edge>> path;
 
 	// return empty path, destination was not found
-	if (destination.previous == nullptr) return path;
+	Node* pointer = &destination;
+	if (destination.previous != nullptr) 
+	{
+		while (pointer->previous_edge != nullptr)
+		{
+			path.push_back(pointer->previous_edge);
+			pointer = pointer->previous;
+		}
+	}
+
+	std::reverse(path.begin(), path.end());
 
 	return path;
 }

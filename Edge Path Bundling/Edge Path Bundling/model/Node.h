@@ -20,7 +20,12 @@ public:
 	// dijkstra related fields
 	double distance = DBL_MAX; // -1 = not visited, other value = distance
 	bool visited = false;
+	
+	// previous node in path
 	Node* previous;
+
+	// edge in path to previous node
+	std::shared_ptr<Edge> previous_edge;
 
 public:
 
