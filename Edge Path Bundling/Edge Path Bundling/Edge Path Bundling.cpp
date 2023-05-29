@@ -9,8 +9,8 @@ int main()
 {
     std::string nodes_path = "data/airports.txt";
     std::string edges_path = "data/routes-preprocessed.csv";
-    float d = 1.2;
-    float k = 3.0;
+    float d = 1.0;
+    float k = 2.0;
 
     /*
     This graph is/has:

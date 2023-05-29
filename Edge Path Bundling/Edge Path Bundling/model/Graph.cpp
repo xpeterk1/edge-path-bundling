@@ -70,7 +70,7 @@ std::vector<std::shared_ptr<Edge>> Graph::find_shortest_path(Node& source, Node&
 	Node* pointer = &destination;
 	if (destination.previous != nullptr) 
 	{
-		while (pointer->previous_edge != nullptr)
+		while (pointer != NULL && pointer->previous_edge != NULL)
 		{
 			path.push_back(pointer->previous_edge);
 			pointer = pointer->previous;
