@@ -142,6 +142,7 @@
     <ClInclude Include="model\Edge.h" />
     <ClInclude Include="model\Node.h" />
     <ClInclude Include="parser\parser.h" />
+    <ClInclude Include="parser\preprocessing.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

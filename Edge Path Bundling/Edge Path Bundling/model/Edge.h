@@ -25,6 +25,12 @@ public:
 		return this->weight < other.weight;
 	}
 
+
+	bool operator >(const Edge& other) const
+	{
+		return this->weight > other.weight;
+	}
+
 	bool operator ==(const Edge& other) const 
 	{
 		return this->weight == other.weight;

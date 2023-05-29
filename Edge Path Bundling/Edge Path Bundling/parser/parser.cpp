@@ -7,9 +7,20 @@ Graph Parser::load(std::string nodes_path, std::string edges_path, double d)
 
 	combine(nodes, edges, d);
 
-	//todo next: sort edges
-	//std::sort(edges.begin(), edges.end());
+	// remove nodes without edges
+	for (auto node_pair = nodes.begin(); node_pair != nodes.end(); )
+	{
+		if (node_pair->second.edges.empty())
+		{
+			node_pair = nodes.erase(node_pair);
+		} else 
+		{
+			node_pair++;
+		}
+	}
 
+	// sort edges
+	std::sort(edges.begin(), edges.end(), std::greater<>());
 
 	Graph g = Graph(nodes, edges, d);
 	return g;
@@ -60,7 +71,7 @@ std::map<int, Node> Parser::load_nodes(std::string path)
 	}
 
 	file.close();
-	
+
 	return nodes;
 }
 
@@ -73,7 +84,7 @@ std::vector<Edge> Parser::load_edges(std::string path)
 	file.open(path, std::ios::out);
 
 	std::string line;
-	
+
 	// skip the first line with header
 	std::getline(file, line);
 	while (std::getline(file, line))
@@ -84,10 +95,10 @@ std::vector<Edge> Parser::load_edges(std::string path)
 		int source_id, destination_id;
 		bool valid = true;
 
-		for (int i = 0; i < 9; i++)
+		for (int i = 0; i < 2; i++)
 		{
 			std::getline(ss, word, ',');
-			if (i == 3) // source ID
+			if (i == 0) // source ID
 			{
 				if (word == "\\N")
 				{
@@ -97,7 +108,7 @@ std::vector<Edge> Parser::load_edges(std::string path)
 
 				source_id = stoi(word);
 			}
-			else if(i == 5) // destination ID
+			else if (i == 1) // destination ID
 			{
 				if (word == "\\N")
 				{
@@ -116,13 +127,12 @@ std::vector<Edge> Parser::load_edges(std::string path)
 		}
 	}
 
- 	return edges;
+	return edges;
 }
 
 void Parser::combine(std::map<int, Node>& nodes, std::vector<Edge>& edges, double d)
 {
-	int counter = 0;
-	for (auto it = edges.begin(); it != edges.end(); it++) {
+	for (auto it = edges.begin(); it < edges.end(); ) {
 		int source_id = it->source_id;
 		int dest_id = it->destination_id;
 
@@ -140,12 +150,10 @@ void Parser::combine(std::map<int, Node>& nodes, std::vector<Edge>& edges, doubl
 		double distance = source.distance_to(destination);
 
 		it->set_weight(distance, d);
-		
+
 		// set edges to nodes
 		source.edges.push_back(*it);
 		destination.edges.push_back(*it);
-		counter++;
+		it++;
 	}
-
-	int be = 3;
 }
