@@ -4,7 +4,6 @@
 #include <vector>
 #include <climits>
 #include <memory>
-
 #include "Edge.h"
 
 class Node

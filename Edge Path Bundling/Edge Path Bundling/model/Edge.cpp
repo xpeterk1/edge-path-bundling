@@ -2,8 +2,7 @@
 #include "Edge.h"
 
 Edge::Edge()
-{
-}
+{}
 
 Edge::Edge(int source_id, int destination_id)
 {

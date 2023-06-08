@@ -132,12 +132,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Edge Path Bundling.cpp" />
+    <ClCompile Include="model\bezier.cpp" />
     <ClCompile Include="model\Edge.cpp" />
     <ClCompile Include="model\Graph.cpp" />
     <ClCompile Include="model\Node.cpp" />
     <ClCompile Include="parser\parser.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="model\bezier.h" />
     <ClInclude Include="model\Graph.h" />
     <ClInclude Include="model\Edge.h" />
     <ClInclude Include="model\Node.h" />

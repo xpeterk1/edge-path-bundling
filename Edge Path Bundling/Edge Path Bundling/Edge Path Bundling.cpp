@@ -4,6 +4,7 @@
 #include "model/Edge.h"
 #include "model/Node.h"
 #include "parser/parser.h"
+#include "model/bezier.h"
 
 int main()
 {
@@ -24,7 +25,7 @@ int main()
     */
 
     Graph g = Parser().load(nodes_path, edges_path, d);
-
+    std::vector<std::vector<Coordinates>> controlPointVectors;
     for (auto& edge : g.edges)
     {
         if (edge.get()->lock) continue;
@@ -57,13 +58,20 @@ int main()
             continue;
         }
 
-        for (auto& edge : path) {
-            edge.get()->lock = true;
+        // Lock every edge in the path so it wont be substituted in the future 
+        std::vector<Coordinates> detourControlPoints;
+        for (auto& edgeInPath : path) 
+        {
+            edgeInPath.get()->lock = true;
+            int id = edgeInPath.get()->source_id;
+            auto sourceNode = g.nodes.at(id);
+            Coordinates point;(sourceNode.longitude, sourceNode.latitude);
+            detourControlPoints.push_back(point);
         }
-
-        //TODO: get path nodes control points
-
-
-
+        int id = edge.get()->destination_id;
+        auto destinationNode = g.nodes.at(id);
+        Coordinates point(destinationNode.longitude, destinationNode.latitude);
+        detourControlPoints.push_back(point);
+        controlPointVectors.push_back(detourControlPoints); // final node must be added manually
     }
 }
