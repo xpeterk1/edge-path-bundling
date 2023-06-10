@@ -5,6 +5,7 @@
 #include "model/Node.h"
 #include "parser/parser.h"
 #include "model/bezier.h"
+#include "drawing/drawing.h"
 
 int main()
 {
@@ -26,9 +27,13 @@ int main()
 
     Graph g = Parser().load(nodes_path, edges_path, d);
     std::vector<std::vector<Coordinates>> controlPointVectors;
+    
+    draw();
+
     for (auto& edge : g.edges)
     {
         if (edge.get()->lock) continue;
+
 
         edge.get()->skip = true;
         Node& source = g.nodes.at(edge.get()->source_id);
@@ -73,5 +78,7 @@ int main()
         Coordinates point(destinationNode.longitude, destinationNode.latitude);
         detourControlPoints.push_back(point);
         controlPointVectors.push_back(detourControlPoints); // final node must be added manually
+
+
     }
 }

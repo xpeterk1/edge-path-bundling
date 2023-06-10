@@ -70,6 +70,10 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(ProjectDir)include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -128,18 +132,27 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Edge Path Bundling.cpp" />
+    <ClCompile Include="include\glad\glad.c" />
     <ClCompile Include="model\bezier.cpp" />
     <ClCompile Include="model\Edge.cpp" />
     <ClCompile Include="model\Graph.cpp" />
     <ClCompile Include="model\Node.cpp" />
     <ClCompile Include="parser\parser.cpp" />
+    <ClCompile Include="stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="drawing\drawing.h" />
+    <ClInclude Include="drawing\jcrSetupGLFWandGLAD.h" />
+    <ClInclude Include="drawing\jcrShader.h" />
+    <ClInclude Include="drawing\jcrTextureLoading.h" />
+    <ClInclude Include="drawing\jcrVAO.h" />
     <ClInclude Include="model\bezier.h" />
+    <ClInclude Include="model\drawing.h" />
     <ClInclude Include="model\Graph.h" />
     <ClInclude Include="model\Edge.h" />
     <ClInclude Include="model\Node.h" />

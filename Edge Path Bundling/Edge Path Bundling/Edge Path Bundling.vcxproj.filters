@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\drawing">
+      <UniqueIdentifier>{2016927f-2f39-4db3-b2ef-f0a0ae67f6af}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Edge Path Bundling.cpp">
@@ -31,6 +34,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="model\bezier.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="include\glad\glad.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stb_image.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -52,6 +61,24 @@
     </ClInclude>
     <ClInclude Include="model\bezier.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="model\drawing.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="drawing\drawing.h">
+      <Filter>Source Files\drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="drawing\jcrSetupGLFWandGLAD.h">
+      <Filter>Source Files\drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="drawing\jcrShader.h">
+      <Filter>Source Files\drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="drawing\jcrTextureLoading.h">
+      <Filter>Source Files\drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="drawing\jcrVAO.h">
+      <Filter>Source Files\drawing</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
