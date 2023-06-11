@@ -164,6 +164,12 @@
     <None Include="data\routes-ids.csv" />
     <None Include="data\routes-preprocessed.csv" />
     <None Include="data\routes.csv" />
+    <None Include="shaders\edge2D.frag" />
+    <None Include="shaders\edge2D.vert" />
+    <None Include="shaders\map2D.frag" />
+    <None Include="shaders\map2D.vert" />
+    <None Include="shaders\point2D.frag" />
+    <None Include="shaders\point2D.vert" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="data\airports.txt" />

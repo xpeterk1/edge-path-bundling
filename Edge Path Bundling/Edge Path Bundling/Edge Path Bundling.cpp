@@ -28,7 +28,7 @@ int main()
     Graph g = Parser().load(nodes_path, edges_path, d);
     std::vector<std::vector<Coordinates>> controlPointVectors;
     
-    draw();
+    draw(g);
 
     for (auto& edge : g.edges)
     {

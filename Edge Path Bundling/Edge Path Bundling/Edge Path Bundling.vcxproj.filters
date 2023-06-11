@@ -16,6 +16,9 @@
     <Filter Include="Source Files\drawing">
       <UniqueIdentifier>{2016927f-2f39-4db3-b2ef-f0a0ae67f6af}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\shaders">
+      <UniqueIdentifier>{79eac1b8-1a71-45d8-95ed-ff086cb33843}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Edge Path Bundling.cpp">
@@ -86,6 +89,24 @@
     <None Include="data\routes-ids.csv" />
     <None Include="data\routes.csv" />
     <None Include="data\airports-extended.csv" />
+    <None Include="shaders\map2D.frag">
+      <Filter>Source Files\shaders</Filter>
+    </None>
+    <None Include="shaders\map2D.vert">
+      <Filter>Source Files\shaders</Filter>
+    </None>
+    <None Include="shaders\point2D.frag">
+      <Filter>Source Files\shaders</Filter>
+    </None>
+    <None Include="shaders\point2D.vert">
+      <Filter>Source Files\shaders</Filter>
+    </None>
+    <None Include="shaders\edge2D.frag">
+      <Filter>Source Files\shaders</Filter>
+    </None>
+    <None Include="shaders\edge2D.vert">
+      <Filter>Source Files\shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="data\airports.txt" />

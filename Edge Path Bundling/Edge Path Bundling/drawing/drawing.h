@@ -14,15 +14,18 @@
 #include "jcrTextureLoading.h"
 
 
-void draw()
+void draw(Graph g)
 {
-	int retVal;
-
 	// Set up a rendering window using GLFW and GLAD
+	int retVal;
 	GLFWwindow* window = jcrGLFWGLAD::setupWindow(retVal, 1909,823);
 
-	// Setup Shaders
-	jcrShader::Shader shaderDisplay("shaders\\flatTextureShader2D.vert", "shaders\\flatTextureShader2D.frag");
+
+	/////////////////
+	// Prepare Map //
+	/////////////////
+	// Setup Shader
+	jcrShader::Shader shaderDisplay("shaders\\map2D.vert", "shaders\\map2D.frag");
 	shaderDisplay.setInt("textureUnit", 0);
 	/*
 	float verticesDisplay[] =
@@ -39,62 +42,95 @@ void draw()
 	};
 	*/
 
+	// Prepare Mesh
 	float x = 1.0f;
 	float y = 1.0f;
 	float verticesDisplay[] = 
 	{
 		//Vertex Coord		// Texture Coord	
-		x,  y, 0.0f,  1.0, 1.0,	// top right
-		x, -y, 0.0f,  1.0, 0.0,	// bottom right
-		-x,  y, 0.0f,  0.0, 1.0,	// top left 
-		-x,  y, 0.0f,  0.0, 1.0,	// top left 
-		x, -y, 0.0f,  1.0, 0.0,	// bottom right
-		-x, -y, 0.0f,  0.0, 0.0	// bottom left
+		 x,  y, 1.0, 1.0,	// top right
+		 x, -y, 1.0, 0.0,	// bottom right
+		-x,  y, 0.0, 1.0,	// top left 
+		-x,  y, 0.0, 1.0,	// top left 
+		 x, -y, 1.0, 0.0,	// bottom right
+		-x, -y, 0.0, 0.0	// bottom left
 	};
 
 	// VAO / VBO for displaying the texture
 	unsigned int VAO_Display, VBO_Display;
-	unsigned int dimensionOfAttributes[] = { 3,2 };
-	retVal = jcrVAO::createVAOwithoutEBO(VAO_Display, VBO_Display, verticesDisplay, 6, 2, dimensionOfAttributes);
+	unsigned int dimOfAttributesMap[] = { 2,2 };
+	retVal = jcrVAO::createVAOwithoutEBO(VAO_Display, VBO_Display, verticesDisplay, 6, 2, dimOfAttributesMap);
 
 	// Load texture of map
 	int texIdMap = jcrTexture::loadTextureFromFile("textures\\map.png");
 	
-	//RenderingLoop
-	while (!glfwWindowShouldClose(window))
-	{
-		////////////////
-		// Loop Setup //
-		////////////////
 
-		// Set color with which clear commands fills buffer
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	////////////////////
+	// Prepare Points //
+	////////////////////
+	// Setup Shader
+	jcrShader::Shader shaderPoints("shaders\\point2D.vert", "shaders\\point2D.frag");
 
-		//clear the color buffer (using default color defined above)
-		glClear(GL_COLOR_BUFFER_BIT);
+	// Prepare Mesh
+	float verticesPoints[] = {0,0,0.1,0.1};
+	int numOfPoints = 2;
+
+	// VAO & VBO for displaying points
+	unsigned int VAO_Points, VBO_Points;
+	unsigned int dimOfAttributesPoints[] = {2};
+	retVal = jcrVAO::createVAOwithoutEBO(VAO_Points, VBO_Points, verticesPoints, numOfPoints, 1, dimOfAttributesPoints);
+
+	///////////////////
+	// Prepare Edges //
+	///////////////////
+	jcrShader::Shader shaderEdges("shaders\\edge2D.vert", "shaders\\edge2D.frag");
+
+	// VAO & VBO for displaying points
+	unsigned int VAO_Edges, VBO_Edges;
+	unsigned int dimOfAttributesEdges[] = {2};
+	retVal = jcrVAO::createVAOwithoutEBO(VAO_Edges, VBO_Edges, verticesPoints, numOfPoints, 1, dimOfAttributesEdges);
 
 
-		/////////////
-		// Drawing //
-		/////////////
+	/////////////
+	// Drawing //
+	/////////////
+	// Set color with which clear commands fills buffer
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-		//Draw Map
-		glActiveTexture(0);
-		glBindTexture(GL_TEXTURE_2D, texIdMap);
-		glBindVertexArray(VAO_Display);
-		shaderDisplay.use();
-		shaderDisplay.setInt("textureUnit", 0);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
+	//clear the color buffer (using default color defined above)
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	//Draw Map
+	glActiveTexture(0);
+	glBindTexture(GL_TEXTURE_2D, texIdMap);
+	glBindVertexArray(VAO_Display);
+	shaderDisplay.use();
+	shaderDisplay.setInt("textureUnit", 0);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	
+	// Draw edges
+	glBindVertexArray(VAO_Edges);
+	shaderEdges.use();
+	glLineWidth(2.0f);
+	glDrawArrays(GL_LINES, 0, 2);
+	
+	// Draw Points
+	glBindVertexArray(VAO_Points);
+	shaderPoints.use();
+	glPointSize(10.0f);
+	glDrawArrays(GL_POINTS, 0, 2);
 
 
-		////////////////////
-		// Loop End Tasks //
-		////////////////////
 
-		// Swap front and back buffer (one for drawing one for displaying)
-		glfwSwapBuffers(window);
 
-		// Check for events like Keyboard input
-		glfwPollEvents();
-	}
+	////////////////////
+	// Loop End Tasks //
+	////////////////////
+
+	// Swap front and back buffer (one for drawing one for displaying)
+	glfwSwapBuffers(window);
+
+	// Check for events like Keyboard input
+	glfwPollEvents();
+	
 }
