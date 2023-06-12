@@ -51,8 +51,8 @@ edges = []
 for index, row in nodes_list.iterrows():
     id = row['1']
     name = row['2']
-    long = row['7']
-    lat = row['8']
+    long = row['8']
+    lat = row['7']
     nodes[id] = Node(id, long, lat, name)
 
 # Load edges to list
@@ -106,8 +106,8 @@ for edge in edges:
     s = nodes[edge.source]
     d = nodes[edge.destination]
 
-    x = [s.latitude, d.latitude]
-    y = [s.longitude, d.longitude]
+    y = [s.latitude, d.latitude]
+    x = [s.longitude, d.longitude]
 
     plt.plot(x, y, color='red')
 
