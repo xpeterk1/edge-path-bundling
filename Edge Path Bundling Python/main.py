@@ -166,9 +166,9 @@ for edge in tqdm(edges):
     controlPoints = []
     for edge in path:
         edge.lock = True
-        controlPoints.append(np.array([edge.source.longitude, edge.source.latitude]))
+        controlPoints.append(np.array([nodes[edge.source].longitude, nodes[edge.source].latitude]))
     lastEdge = path[-1]
-    controlPoints.append(np.array([lastEdge.destination.longitude, lastEdge.destination.latitude]))
+    controlPoints.append(np.array([nodes[lastEdge.destination].longitude, [nodes[lastEdge.destination].latitude]]))
     controlPointLists.append(controlPoints)
 
 # create bezier curves & polygons
