@@ -155,7 +155,7 @@ for edge in tqdm(edges):
 
     if len(path) == 0:
         edge.skip = False
-
+        continue
     original_edge_distance = source.distance_to(dest)
     new_path_length = sum([e.weight for e in path])
 
@@ -166,14 +166,17 @@ for edge in tqdm(edges):
     controlPoints = []
     for edge in path:
         edge.lock = True
-        controlPoints.add(np.array([edge.source.longitude, edge.source.latitude]))
+        controlPoints.append(np.array([edge.source.longitude, edge.source.latitude]))
     lastEdge = path[-1]
-    controlPoints.add(np.array([lastEdge.destination.longitude, lastEdge.destination.latitude]))
+    controlPoints.append(np.array([lastEdge.destination.longitude, lastEdge.destination.latitude]))
     controlPointLists.append(controlPoints)
 
-# create bezier curves 
+# create bezier curves & polygons
 bezierPolygons =[]
 for controlPoints in controlPointLists:
     n = 100
     polygon  = bz.createBezierPolygon(controlPoints, n) #returns list of 2d vectors
-    bezierPolygons.add(polygon)
+    bezierPolygons.append(polygon)
+# create plottable data from the bezier curves
+#plottableBezierPolygons = []
+#for i in range(len(bezierPolygons)):
