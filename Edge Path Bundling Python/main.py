@@ -6,6 +6,7 @@ import typing
 from typing import List
 from queue import PriorityQueue
 from tqdm import tqdm
+import bezier as bz
 
 d = 1.2
 k = 2
@@ -140,6 +141,7 @@ edges.sort(key=lambda x: x.weight, reverse=True)
 
 
 # MAIN CYCLE
+controlPointLists = []
 for edge in tqdm(edges):
     if edge.lock:
         continue
@@ -160,8 +162,18 @@ for edge in tqdm(edges):
     if new_path_length > k * original_edge_distance:
         edge.skip = False
         continue
-
+    
+    controlPoints = []
     for edge in path:
         edge.lock = True
-    # TODO: control points + draw
+        controlPoints.add(np.array([edge.source.longitude, edge.source.latitude]))
+    lastEdge = path[-1]
+    controlPoints.add(np.array([lastEdge.destination.longitude, lastEdge.destination.latitude]))
+    controlPointLists.append(controlPoints)
 
+# create bezier curves 
+bezierPolygons =[]
+for controlPoints in controlPointLists:
+    n = 100
+    polygon  = bz.createBezierPolygon(controlPoints, n) #returns list of 2d vectors
+    bezierPolygons.add(polygon)
