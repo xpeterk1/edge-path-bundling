@@ -67,8 +67,8 @@ def find_shortest_path(source: Node, dest: Node, nodes, edges) -> List[Edge]:
 d = 3.0
 k = 2
 
-nodes, edges = airports.get_airpors_data(d)
-#nodes, edges = migrations.get_migrations_data(d)
+#nodes, edges = airports.get_airpors_data(d)
+nodes, edges = migrations.get_migrations_data(d)
 
 controlPointLists = []
 too_long = 0
@@ -112,28 +112,42 @@ for edge in tqdm(edges, desc="Computing: "):
     controlPoints.append(np.array([dest.longitude, dest.latitude]))
     controlPointLists.append(controlPoints)
 
+# DRAWING
 
+"""
 nodes_list = pd.read_csv("data/airports-extended.csv")
 map = gpd.read_file('data/maps/World_Countries.shp')
 geometry = [Point(xy) for xy in zip(nodes_list['8'], nodes_list['7'])]
 
 geo_df = gpd.GeoDataFrame(nodes_list, crs='epsg:4326', geometry=geometry)
-
-fig, ax = plt.subplots(figsize=(50, 50))
-
+"""
+#fig, ax = plt.subplots(figsize=(50, 50))
+"""
 map.plot(ax=ax, alpha=0.4, color='grey')
 geo_df.plot(ax=ax, markersize=1)
+"""
 
-
-# create bezier curves 
-bezierPolygons =[]
+# create and bezier curves
+bezierPolygons = []
 for controlPoints in tqdm(controlPointLists, desc="Drawing: "):
     n = 100
-    polygon = bz.createBezierPolygon(controlPoints, n) # returns list of 2d vectors
+    polygon = bz.createBezierPolygon(controlPoints, n)  # returns list of 2d vectors
     bezierPolygons.append(polygon)
-    y = [arr[0] for arr in polygon]
-    x = [arr[1] for arr in polygon]
+    x = [arr[0] for arr in polygon]
+    y = [arr[1] for arr in polygon]
     plt.plot(x, y, color='red', linewidth=0.1)
+
+# draw lines without detour or with detour that was too long
+for edge in edges:
+    if edge.skip:
+        continue
+
+    s = nodes[edge.source]
+    d = nodes[edge.destination]
+    x = [s.longitude, d.longitude]
+    y = [s.latitude, d.latitude]
+    plt.plot(x, y, color='red', linewidth=0.1)
+
 plt.show()
 
 print(f"Out of {len(edges)}, {too_long} had too long detour and {no_path} had no alternative path.")
