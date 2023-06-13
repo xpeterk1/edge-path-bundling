@@ -10,10 +10,13 @@ import geopandas as gpd
 import descartes
 from shapely.geometry import Point, Polygon
 import math
-from model import Edge, Node
+import heapq
+
 import airports
 import migrations
-import heapq
+import control_points
+from model import Edge, Node
+
 
 
 def find_shortest_path(source: Node, dest: Node, nodes, edges) -> List[Edge]:
@@ -66,6 +69,8 @@ def find_shortest_path(source: Node, dest: Node, nodes, edges) -> List[Edge]:
 # MAIN CYCLE
 d = 3.0
 k = 2
+n = 100
+smoothing = 2
 
 #nodes, edges = airports.get_airpors_data(d)
 nodes, edges = migrations.get_migrations_data(d)
@@ -101,16 +106,7 @@ for edge in tqdm(edges, desc="Computing: "):
         edge_in_path.lock = True
 
     # Get control points for drawing
-    controlPoints = []
-    current_node = source
-    for edge_in_path in path:
-        controlPoints.append(np.array([current_node.longitude, current_node.latitude]))
-
-        other_node_id = edge_in_path.destination if edge_in_path.source == current_node.id else edge_in_path.source
-        current_node = nodes[other_node_id]
-
-    controlPoints.append(np.array([dest.longitude, dest.latitude]))
-    controlPointLists.append(controlPoints)
+    controlPointLists.append(control_points.get(source, dest, nodes, path, smoothing))
 
 # DRAWING
 
@@ -121,7 +117,7 @@ geometry = [Point(xy) for xy in zip(nodes_list['8'], nodes_list['7'])]
 
 geo_df = gpd.GeoDataFrame(nodes_list, crs='epsg:4326', geometry=geometry)
 """
-#fig, ax = plt.subplots(figsize=(50, 50))
+fig, ax = plt.subplots(figsize=(50, 25))
 """
 map.plot(ax=ax, alpha=0.4, color='grey')
 geo_df.plot(ax=ax, markersize=1)
@@ -130,12 +126,11 @@ geo_df.plot(ax=ax, markersize=1)
 # create and bezier curves
 bezierPolygons = []
 for controlPoints in tqdm(controlPointLists, desc="Drawing: "):
-    n = 100
-    polygon = bz.createBezierPolygon(controlPoints, n)  # returns list of 2d vectors
+    polygon = bz.create_bezier_polygon(controlPoints, n)  # returns list of 2d vectors
     bezierPolygons.append(polygon)
     x = [arr[0] for arr in polygon]
     y = [arr[1] for arr in polygon]
-    plt.plot(x, y, color='red', linewidth=0.1)
+    ax.plot(x, y, color='red', linewidth=0.1, alpha=1)
 
 # draw lines without detour or with detour that was too long
 for edge in edges:
@@ -146,7 +141,12 @@ for edge in edges:
     d = nodes[edge.destination]
     x = [s.longitude, d.longitude]
     y = [s.latitude, d.latitude]
-    plt.plot(x, y, color='red', linewidth=0.1)
+    ax.plot(x, y, color='red', linewidth=0.1,  alpha=1)
+
+for node in nodes.values():
+    a = (node.longitude, node.latitude)
+    c = plt.Circle(a, radius=0.1, color='green')
+    ax.add_patch(c)
 
 plt.show()
 
