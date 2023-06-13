@@ -69,7 +69,7 @@ def find_shortest_path(source: Node, dest: Node, nodes, edges) -> List[Edge]:
 d = 2.0
 k = 2.0
 n = 100
-smoothing = 2
+smoothing = 1
 
 #nodes, edges = airports.get_airpors_data(d)
 nodes, edges = migrations.get_migrations_data(d)
@@ -116,7 +116,7 @@ geometry = [Point(xy) for xy in zip(nodes_list['8'], nodes_list['7'])]
 
 geo_df = gpd.GeoDataFrame(nodes_list, crs='epsg:4326', geometry=geometry)
 """
-fig, ax = plt.subplots(figsize=(50, 25))
+#fig, ax = plt.subplots(figsize=(50, 25))
 """
 map.plot(ax=ax, alpha=0.4, color='grey')
 geo_df.plot(ax=ax, markersize=1)
@@ -129,7 +129,7 @@ for controlPoints in tqdm(controlPointLists, desc="Drawing: "):
     bezierPolygons.append(polygon)
     x = [arr[0] for arr in polygon]
     y = [arr[1] for arr in polygon]
-    ax.plot(x, y, color='red', linewidth=0.1, alpha=1)
+    plt.plot(x, y, color='red', linewidth=0.1, alpha=1)
 
 # draw lines without detour or with detour that was too long
 for edge in edges:
@@ -140,13 +140,17 @@ for edge in edges:
     d = nodes[edge.destination]
     x = [s.longitude, d.longitude]
     y = [s.latitude, d.latitude]
-    ax.plot(x, y, color='red', linewidth=0.1,  alpha=1)
+    plt.plot(x, y, color='red', linewidth=0.1,  alpha=1)
 
 for node in nodes.values():
     a = (node.longitude, node.latitude)
     c = plt.Circle(a, radius=0.1, color='green')
-    ax.add_patch(c)
+    #ax.add_patch(c)
 
+plt.axis('equal')
+plt.axis('off')
+plt.gcf().set_dpi(300)
+plt.tight_layout()
 plt.show()
 
 print(f"Out of {len(edges)}, {too_long} had too long detour and {no_path} had no alternative path.")
