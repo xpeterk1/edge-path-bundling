@@ -147,7 +147,7 @@ for node in nodes.values():
     c = plt.Circle(a, radius=0.1, color='green')
     #ax.add_patch(c)
 
-plt.axis('equal')
+plt.axis('scaled')
 plt.axis('off')
 plt.gcf().set_dpi(300)
 plt.tight_layout()
