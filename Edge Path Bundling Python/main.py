@@ -18,7 +18,6 @@ import control_points
 from model import Edge, Node
 
 
-
 def find_shortest_path(source: Node, dest: Node, nodes, edges) -> List[Edge]:
     # reset nodes
     for node in nodes.values():
@@ -42,7 +41,7 @@ def find_shortest_path(source: Node, dest: Node, nodes, edges) -> List[Edge]:
             other_id = edge.destination if edge.source == next_node.id else edge.source
             other = nodes[other_id]
 
-            current_distance = next_node.distance + edge.distance
+            current_distance = next_node.distance + edge.weight
 
             if current_distance < other.distance:
                 other.distance = current_distance
@@ -67,8 +66,8 @@ def find_shortest_path(source: Node, dest: Node, nodes, edges) -> List[Edge]:
 
 
 # MAIN CYCLE
-d = 3.0
-k = 2
+d = 2.0
+k = 2.0
 n = 100
 smoothing = 2
 
