@@ -4,58 +4,32 @@ import matplotlib.pyplot as plt
 import math
 import typing
 from typing import List
-from queue import PriorityQueue
 from tqdm import tqdm
 import bezier as bz
-
-d = 1.2
-k = 2
-
-class Edge:
-
-    def __init__(self, source, destination):
-        self.source = source
-        self.destination = destination
-        self.distance = -1
-        self.weight = -1
-        self.skip = False
-        self.lock = False
+import geopandas as gpd
+import descartes
+from shapely.geometry import Point, Polygon
+import math
+from model import Edge, Node
+import airports
+import migrations
+import heapq
 
 
-class Node:
-
-    def __init__(self, id, longitude, latitude, name):
-        self.id = id
-        self.longitude = longitude
-        self.latitude = latitude
-        self.name = name
-        self.edges = []
-
-        # dijkstra related attributes
-        self.distance = -1
-        self.visited = False
-        self.previous = None
-        self.previous_edge = None
-
-    def distance_to(self, other) -> float:
-        return math.sqrt(pow(other.longitude - self.longitude, 2) + pow(other.latitude - self.latitude, 2))
-
-
-def find_shortest_path(source: Node, dest: Node) -> List[Edge]:
+def find_shortest_path(source: Node, dest: Node, nodes, edges) -> List[Edge]:
     # reset nodes
     for node in nodes.values():
         node.distance = 99999999999999
         node.visited = False
         node.previous = None
-        node.previsou_edge = None
+        node.previous_edge = None
 
     source.distance = 0
+    queue = []
+    heapq.heappush(queue, (source.distance, source))
 
-    queue = PriorityQueue()
-    queue.put((source.distance, source))
-
-    while not queue.empty():
-        next_node = queue.get()[1]
+    while not len(queue) == 0:
+        next_node = heapq.heappop(queue)[1]
         next_node.visited = True
 
         for edge in next_node.edges:
@@ -65,13 +39,13 @@ def find_shortest_path(source: Node, dest: Node) -> List[Edge]:
             other_id = edge.destination if edge.source == next_node.id else edge.source
             other = nodes[other_id]
 
-            current_distance = next_node.distance + edge.weight
+            current_distance = next_node.distance + edge.distance
 
             if current_distance < other.distance:
                 other.distance = current_distance
                 other.previous = next_node
                 other.previous_edge = edge
-                queue.put((other.distance, other))
+                heapq.heappush(queue, (other.distance, other))
 
         # Already found the destination, no need to continue with the search
         if next_node == dest:
@@ -89,60 +63,17 @@ def find_shortest_path(source: Node, dest: Node) -> List[Edge]:
     return path
 
 
-# Load data into dataframes
-nodes_list = pd.read_csv("data/airports-extended.csv")
-edges_list = pd.read_csv("data/routes-preprocessed.csv")
-
-nodes = {}
-edges = []
-
-# Load nodes into dict. Maps ID -> Node instance
-for index, row in nodes_list.iterrows():
-    id = row['1']
-    name = row['2']
-    long = row['7']
-    lat = row['8']
-    nodes[id] = Node(id, long, lat, name)
-
-# Load edges to list
-for index, row in edges_list.iterrows():
-    so = row['source_id']
-    dest = row['destination_id']
-    edges.append(Edge(so, dest))
-
-# Assign edges to nodes
-for edge in edges:
-
-    # eliminate edges without nodes
-    if edge.destination not in nodes or edge.source not in nodes:
-        edges.remove(edge)
-
-    source = nodes[edge.source]
-    dest = nodes[edge.destination]
-    distance = source.distance_to(dest)
-
-    edge.distance = distance
-    edge.weight = pow(distance, k)
-
-    source.edges.append(edge)
-    dest.edges.append(edge)
-
-# Eliminate nodes without edges
-to_remove = [node.id for node in nodes.values() if len(node.edges) == 0]
-for key in to_remove:
-    del nodes[key]
-
-# Sort edges inside nodes in ascending order
-for node in nodes.values():
-    node.edges.sort(key=lambda x: x.distance)
-
-# Sort edges
-edges.sort(key=lambda x: x.weight, reverse=True)
-
-
 # MAIN CYCLE
+d = 3.0
+k = 2
+
+nodes, edges = airports.get_airpors_data(d)
+#nodes, edges = migrations.get_migrations_data(d)
+
 controlPointLists = []
-for edge in tqdm(edges):
+too_long = 0
+no_path = 0
+for edge in tqdm(edges, desc="Computing: "):
     if edge.lock:
         continue
 
@@ -151,32 +82,60 @@ for edge in tqdm(edges):
     source = nodes[edge.source]
     dest = nodes[edge.destination]
 
-    path = find_shortest_path(source, dest)
+    path = find_shortest_path(source, dest, nodes, edges)
 
     if len(path) == 0:
+        no_path += 1
         edge.skip = False
         continue
+
     original_edge_distance = source.distance_to(dest)
-    new_path_length = sum([e.weight for e in path])
+    new_path_length = sum([e.distance for e in path])
 
     if new_path_length > k * original_edge_distance:
+        too_long += 1
         edge.skip = False
         continue
-    
+
+    for edge_in_path in path:
+        edge_in_path.lock = True
+
+    # Get control points for drawing
     controlPoints = []
-    for edge in path:
-        edge.lock = True
-        controlPoints.append(np.array([nodes[edge.source].longitude, nodes[edge.source].latitude]))
-    lastEdge = path[-1]
-    controlPoints.append(np.array([nodes[lastEdge.destination].longitude, [nodes[lastEdge.destination].latitude]]))
+    current_node = source
+    for edge_in_path in path:
+        controlPoints.append(np.array([current_node.longitude, current_node.latitude]))
+
+        other_node_id = edge_in_path.destination if edge_in_path.source == current_node.id else edge_in_path.source
+        current_node = nodes[other_node_id]
+
+    controlPoints.append(np.array([dest.longitude, dest.latitude]))
     controlPointLists.append(controlPoints)
 
-# create bezier curves & polygons
+
+nodes_list = pd.read_csv("data/airports-extended.csv")
+map = gpd.read_file('data/maps/World_Countries.shp')
+geometry = [Point(xy) for xy in zip(nodes_list['8'], nodes_list['7'])]
+
+geo_df = gpd.GeoDataFrame(nodes_list, crs='epsg:4326', geometry=geometry)
+
+fig, ax = plt.subplots(figsize=(50, 50))
+
+map.plot(ax=ax, alpha=0.4, color='grey')
+geo_df.plot(ax=ax, markersize=1)
+
+
+# create bezier curves 
 bezierPolygons =[]
-for controlPoints in controlPointLists:
+for controlPoints in tqdm(controlPointLists, desc="Drawing: "):
     n = 100
-    polygon  = bz.createBezierPolygon(controlPoints, n) #returns list of 2d vectors
+    polygon = bz.createBezierPolygon(controlPoints, n) # returns list of 2d vectors
     bezierPolygons.append(polygon)
-# create plottable data from the bezier curves
-#plottableBezierPolygons = []
-#for i in range(len(bezierPolygons)):
+    y = [arr[0] for arr in polygon]
+    x = [arr[1] for arr in polygon]
+    plt.plot(x, y, color='red', linewidth=0.1)
+plt.show()
+
+print(f"Out of {len(edges)}, {too_long} had too long detour and {no_path} had no alternative path.")
+
+
