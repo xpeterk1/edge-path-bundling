@@ -5,17 +5,25 @@ import bezierSpherical as bz3d
 import bezier as bz
 
 n = 50
-controlPoints = [np.array([0,0.25*np.pi]), np.array([0.5*np.pi, 0.25*np.pi]), np.array([np.pi,0.25*np.pi]) ]
-polygonSphere = bz3d.createSphericalBezierPolygon(controlPoints, n)
-polygonFlat = bz.create_bezier_polygon(controlPoints, n)
+controlPoints = [np.array([150,20]), np.array([-179,-60]), np.array([-150, 20]) ]
+
+bez = bz3d.createSphericalBezierPolygon(controlPoints,-1)
+xBez = [arr[0] for arr in bez]
+yBez = [arr[1] for arr in bez]
+plt.plot(xBez, yBez) #blue
+
+geodesic = bz3d.createGeodesicPolygon(controlPoints[0], controlPoints[-1],-1)
+xGeo = [arr[0] for arr in geodesic]
+yGeo = [arr[1] for arr in geodesic]
 
 
-x1 = [arr[0] for arr in polygonFlat]
-y1 = [arr[1] for arr in polygonFlat]
+plt.plot(xGeo, yGeo) #red
+boundaries=[[-180,-90],[-180, 90],[180,90],[180,-90],[-180,-90] ]
+x,y = zip(*boundaries)
+plt.plot(x, y, color='black', linewidth=0.1,  alpha=1)
 
-x2 = [arr[0] for arr in polygonSphere]
-y2 = [arr[1] for arr in polygonSphere]
 
-plt.plot(x1, y1)
-plt.plot(x2, y2)
+
+
+
 plt.show()

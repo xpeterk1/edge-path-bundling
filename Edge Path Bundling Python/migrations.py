@@ -5,7 +5,7 @@ from model import Edge, Node
 
 
 def get_migrations_data(d):
-    f = open('data/migrations.json')
+    f = open('data/migrationsTest.json')
     data = json.load(f)
 
     nodes_list = data['nodes']
