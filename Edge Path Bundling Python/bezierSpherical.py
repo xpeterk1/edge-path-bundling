@@ -151,13 +151,35 @@ def createSphericalBezierPolygon(controlPoints, n = 0, stepSize=1): #n = number 
 
 def plotSpherical(controlPointLists, nodes, edges, n=-1, stepSize = 1):
     # create and plot bezier curves
-    bezierPolygons = []
     for controlPoints in tqdm(controlPointLists, desc="Drawing3D: "):
         polygon = createSphericalBezierPolygon(controlPoints, n, stepSize)  # returns list of 2d vectors
-        bezierPolygons.append(polygon)
-        x = [arr[0] for arr in polygon]
-        y = [arr[1] for arr in polygon]
-        plt.plot(x, y, color='red', linewidth=0.1, alpha=1)
+        
+        #split polygon into sections when it crosses 180deg boundary
+        splitIndices=[]
+        skip=False
+        for i in range(len(polygon)-1):
+            a=polygon[i]
+            d=polygon[i+1]
+            if np.sign(a[0]) != np.sign(d[0]) and np.abs(a[0]) > 170 and np.abs(d[0])> 170 and not skip:
+                #create intermediate points close to border
+                b = a
+                b[0] = np.sign(a[0])*179.9
+                b[1] = 0.5 * (a[1]+d[1])
+                c=d
+                c[0] = np.sign(d[0])*179.9
+                c[1] = b[1]
+                polygon.insert(i+1, b)
+                polygon.insert(i+2, c)
+                splitIndices.append(i+2)
+                skip = True
+            else: 
+                skip = False   
+        segments = np.split(polygon, splitIndices) 
+
+        for segment in segments:
+            x = [arr[0] for arr in segment.tolist()]
+            y = [arr[1] for arr in segment.tolist()]
+            plt.plot(x, y, color='red', linewidth=0.1, alpha=1)
 
     # draw lines without detour or with detour that was too long
     for edge in edges:
@@ -167,10 +189,35 @@ def plotSpherical(controlPointLists, nodes, edges, n=-1, stepSize = 1):
         d = nodes[edge.destination]
         start = np.array([s.longitude, s.latitude])
         end = np.array([d.longitude, d.latitude])
-        samplePoints = createGeodesicPolygon(start, end, n, stepSize)
-        x = [point[0] for point in samplePoints]
-        y = [point[1] for point in samplePoints]
-        plt.plot(x, y, color='blue', linewidth=0.1,  alpha=1)
+        polygon = createGeodesicPolygon(start, end, n, stepSize)
+
+        #split polygon into sections when it corosse 180deg boundary
+        splitIndices=[]
+        skip=False
+        for i in range(len(polygon)-1):
+            a=polygon[i]
+            d=polygon[i+1]
+            if np.sign(a[0]) != np.sign(d[0]) and np.abs(a[0]) > 170 and np.abs(d[0])> 170 and not skip:
+                #create intermediate points close to border
+                b = a
+                b[0] = np.sign(a[0])*179.9
+                b[1] = 0.5 * (a[1]+d[1])
+                c=d
+                c[0] = np.sign(d[0])*179.9
+                c[1] = b[1]
+                polygon.insert(i+1, b)
+                polygon.insert(i+2, c)
+                splitIndices.append(i+2)
+                skip = True
+            else: 
+                skip = False   
+        segments = np.split(polygon, splitIndices) 
+
+
+        for segment in segments:
+            x = [arr[0] for arr in segment.tolist()]
+            y = [arr[1] for arr in segment.tolist()]
+            plt.plot(x, y, color='blue', linewidth=0.1,  alpha=1)
 
     for node in nodes.values():
         a = (node.longitude, node.latitude)
