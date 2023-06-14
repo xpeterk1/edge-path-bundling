@@ -1,10 +1,12 @@
 import numpy as np
 import math
+from numba import jit
 
 
 # arguments: list of 2D-np.array, float
 # return list
 # Check if we have enough control points
+@jit(nopython=True)
 def eval_bezier(control_points, t):
 
     if len(control_points) < 2:
@@ -31,6 +33,7 @@ def eval_bezier(control_points, t):
 # n = number of points to approximate curve
 # arguments: list of 2d-np.arrays , int
 # returns: list of 2d np.arrays (points) on the bezier curve
+@jit(nopython=True)
 def create_bezier_polygon(control_points, n):
 
     if n < 2:

@@ -18,6 +18,7 @@ import control_points
 from model import Edge, Node
 
 
+
 def find_shortest_path(source: Node, dest: Node, nodes, edges) -> List[Edge]:
     # reset nodes
     for node in nodes.values():
@@ -71,8 +72,8 @@ k = 2.0
 n = 100
 smoothing = 1
 
-#nodes, edges = airports.get_airpors_data(d)
-nodes, edges = migrations.get_migrations_data(d)
+nodes, edges = airports.get_airpors_data(d)
+#nodes, edges = migrations.get_migrations_data(d)
 
 controlPointLists = []
 too_long = 0
@@ -109,22 +110,22 @@ for edge in tqdm(edges, desc="Computing: "):
 
 # DRAWING
 
-"""
+
 nodes_list = pd.read_csv("data/airports-extended.csv")
 map = gpd.read_file('data/maps/World_Countries.shp')
 geometry = [Point(xy) for xy in zip(nodes_list['8'], nodes_list['7'])]
 
 geo_df = gpd.GeoDataFrame(nodes_list, crs='epsg:4326', geometry=geometry)
-"""
-#fig, ax = plt.subplots(figsize=(50, 25))
-"""
+
+fig, ax = plt.subplots(figsize=(50, 25))
+
 map.plot(ax=ax, alpha=0.4, color='grey')
 geo_df.plot(ax=ax, markersize=1)
-"""
+
 
 # create and bezier curves
 bezierPolygons = []
-for controlPoints in tqdm(controlPointLists, desc="Drawing: "):
+for controlPoints in tqdm(controlPointLists, desc="Drawing curves: "):
     polygon = bz.create_bezier_polygon(controlPoints, n)  # returns list of 2d vectors
     bezierPolygons.append(polygon)
     x = [arr[0] for arr in polygon]
@@ -132,7 +133,7 @@ for controlPoints in tqdm(controlPointLists, desc="Drawing: "):
     plt.plot(x, y, color='red', linewidth=0.1, alpha=1)
 
 # draw lines without detour or with detour that was too long
-for edge in edges:
+for edge in tqdm(edges, desc="Drawing lines: "):
     if edge.skip:
         continue
 
@@ -142,17 +143,19 @@ for edge in edges:
     y = [s.latitude, d.latitude]
     plt.plot(x, y, color='red', linewidth=0.1,  alpha=1)
 
+"""
 for node in nodes.values():
     a = (node.longitude, node.latitude)
     c = plt.Circle(a, radius=0.1, color='green')
     #ax.add_patch(c)
+"""
 
 plt.axis('scaled')
 plt.axis('off')
-plt.gcf().set_dpi(300)
+#plt.gcf().set_dpi(300)
 plt.tight_layout()
 plt.show()
 
-print(f"Out of {len(edges)}, {too_long} had too long detour and {no_path} had no alternative path.")
+print(f"Out of {len(edges)} edges, {too_long} had too long detour and {no_path} had no alternative path.")
 
 

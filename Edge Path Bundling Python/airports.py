@@ -13,8 +13,8 @@ def get_airpors_data(d):
     for index, row in nodes_list.iterrows():
         id = row['1']
         name = row['2']
-        long = row['7']
-        lat = row['8']
+        lat = row['7']
+        long = row['8']
         nodes[id] = Node(id, long, lat, name)
 
     # Load edges to list

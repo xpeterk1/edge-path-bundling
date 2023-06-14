@@ -7,7 +7,7 @@ import bezier as bz
 n = 50
 controlPoints = [np.array([20,0]), np.array([-179,-60]), np.array([-20, 0]) ]
 
-polygon = bz3d.createSphericalBezierPolygon(controlPoints,200)
+polygon = bz3d.create_spherical_bezier_polygon(controlPoints, 200)
 #split polygon into sections when it crosses 180deg boundary
 splitIndices=[]
 skip=False
@@ -25,7 +25,7 @@ for segment in segments:
     y = [arr[1] for arr in segment.tolist()]
     plt.plot(x, y, color='blue', linewidth=0.1, alpha=1)
 
-polygon = bz3d.createGeodesicPolygon(controlPoints[0], controlPoints[-1], 200)
+polygon = bz3d.create_geodesic_polygon(controlPoints[0], controlPoints[-1], 200)
 #split polygon into sections when it crosses 180deg boundary
 splitIndices=[]
 skip=False

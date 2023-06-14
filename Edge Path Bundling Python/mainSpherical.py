@@ -72,8 +72,8 @@ k = 2.0
 n = 100
 smoothing = 1
 
-#nodes, edges = airports.get_airpors_data(d)
-nodes, edges = migrations.get_migrations_data(d)
+nodes, edges = airports.get_airpors_data(d)
+# nodes, edges = migrations.get_migrations_data(d)
 
 controlPointLists = []
 too_long = 0
@@ -110,9 +110,22 @@ for edge in tqdm(edges, desc="Computing: "):
 
 # DRAWING
 
+
+nodes_list = pd.read_csv("data/airports-extended.csv")
+map = gpd.read_file('data/maps/World_Countries.shp')
+geometry = [Point(xy) for xy in zip(nodes_list['8'], nodes_list['7'])]
+
+geo_df = gpd.GeoDataFrame(nodes_list, crs='epsg:4326', geometry=geometry)
+
+fig, ax = plt.subplots(figsize=(40, 20))
+
+map.plot(ax=ax, alpha=0.4, color='grey')
+geo_df.plot(ax=ax, markersize=1)
+
+
 n = -1
 stepSize = 5
-bz3d.plotSpherical(controlPointLists, nodes, edges,n,stepSize)
+bz3d.plot_spherical(controlPointLists, nodes, edges, n, stepSize)
 
 print(f"Out of {len(edges)}, {too_long} had too long detour and {no_path} had no alternative path.")
 
