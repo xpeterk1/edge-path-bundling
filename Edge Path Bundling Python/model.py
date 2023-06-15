@@ -1,5 +1,6 @@
 import math
 
+
 class Edge:
 
     def __init__(self, source, destination):

@@ -1,6 +1,7 @@
 import pandas as pd
 from model import Edge, Node
 
+
 def get_airpors_data(d):
     # Load data into dataframes
     nodes_list = pd.read_csv("data/airports-extended.csv")
