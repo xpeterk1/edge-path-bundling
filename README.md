@@ -81,3 +81,7 @@ The algorithm itself can be controlled using two parameters `k` and `d`. Both of
 **2D Plotting**             |  **3D Plotting** |
 :-------------------------:|:-------------------------:|
 ![](demo/airlines_2d.png)  |  ![](demo/airlines_3d.png) | 
+
+#### Airlines dataset, plotted on a sphere
+
+![](demo/sphere.png)
