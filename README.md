@@ -24,6 +24,10 @@ In the 2D renderings, all lines are drawn using red colour. This is not the case
 
 The majority of code is implemented using Python with NumPy, matplotlib, pandas, and numba for optimization. The spherical plotting is implemented in C++ using OpenGL 4.6 with the library Cinder.
 
+## Required packages
+
+NumPy, matplotlib, Pandas, Geopandas, numba, tqdm
+
 ## User Guide
 
 This section describes how to run the code and import your dataset. To run the program, run the `main.py` file.
