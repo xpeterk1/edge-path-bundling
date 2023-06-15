@@ -234,6 +234,11 @@ def plot_spherical(control_point_lists, nodes, edges, n=-1, step_size=1):
     #plt.gcf().set_dpi(300)
     plt.tight_layout()
 
+    # crop and save as texture png
     plt.savefig('spherical_texture.png')
+    import cv2
+    img = cv2.imread('spherical_texture.png')
+    img = img[127:2348, 290:4735]
+    cv2.imwrite("spherical_texture.png",img)
     plt.show()
 # end of function
