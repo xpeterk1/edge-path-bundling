@@ -25,7 +25,7 @@ def draw(control_points, nodes, edges, n, use_3d, draw_map):
 
     if use_3d:
         n = -1
-        step_size = 1
+        step_size = 5
         bezierSpherical.plot_spherical(control_points, nodes, edges, n, step_size)
     else:
         # create and bezier curves
