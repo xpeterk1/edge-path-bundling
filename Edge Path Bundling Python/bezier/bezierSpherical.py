@@ -222,11 +222,15 @@ def plot_spherical(control_point_lists, nodes, edges, n=-1, step_size=1):
             y = [arr[1] for arr in segment.tolist()]
             plt.plot(x, y, color='blue', linewidth=0.1,  alpha=1)
 
+    # draw boundaries of texture
+    boundaries = [[-180, -90], [-180, 90], [180, 90], [180, -90], [-180, -90]]
+    x, y = zip(*boundaries)
+    plt.plot(x, y, color='black', linewidth=0.1,  alpha=1)
 
     # plt.axis('scaled')
     ax = plt.gca()
     ax.set_aspect('equal', adjustable='box')
-    plt.axis('Off')
+    plt.axis('On')
     #plt.gcf().set_dpi(300)
     plt.tight_layout()
 
