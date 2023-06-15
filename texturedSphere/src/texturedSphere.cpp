@@ -45,7 +45,7 @@ void BasicApp::update()
 
 void BasicApp::draw()
 {
-	gl::clear(Color(0.0f, 0.0f, 0.0f));
+	gl::clear(Color(1.0f, 1.0f, 1.0f));
 	gl::setMatrices(mCam);
 	gl::rotate(glm::rotate(mRotationAngle, vec3(0.0f, 1.0f, 0.0f)));
 	mSphere->draw();
