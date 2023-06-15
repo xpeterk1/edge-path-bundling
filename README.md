@@ -58,6 +58,9 @@ The algorithm itself can be controlled using two parameters `k` and `d`. Both of
 - `n`: Number of sampling points for Beziér curves. Default 100.
 - `smoothing`: Level of recursive smoothing. Default 2.
 
+### 3d Visualisation
+If `plot_3d` was set to true (see last section) the programm generates a texture in spherical coordinates that can be applied to a sphere. This is done by the executable "texturedSphere.exe" which renders the texture on a rotating sphere.
+"texturedSphere.exe" relies on having a texture named "spherical_texture.png" in the same folder. If the executable does not work on your system you have to recompile it as Debug Verison with the Visual Studio 2019 project "texturedSphere" (SDK 10.0.18362.0). In this case you might also have to recompile the libraries.
  
 
 # Demo
