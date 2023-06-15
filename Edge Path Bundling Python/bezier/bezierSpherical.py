@@ -226,7 +226,7 @@ def plot_spherical(control_point_lists, nodes, edges, n=-1, step_size=1):
     # plt.axis('scaled')
     ax = plt.gca()
     ax.set_aspect('equal', adjustable='box')
-    plt.axis('On')
+    plt.axis('Off')
     #plt.gcf().set_dpi(300)
     plt.tight_layout()
 

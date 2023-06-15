@@ -20,7 +20,7 @@ d = 2.0  # edge weight parameter, weight = distance^d
 k = 2.0  # if new detour is longer than k times the original line it is not bundled
 n = 100  # number of sampling points in Bezier curves
 draw_map = True  # Draw map for the underlying data
-plot_3d = False  # Plot for use in on sphere
+plot_3d = True  # Plot for use on sphere
 smoothing = 2  # Smoothing parameter for Bezier curves
 
 # data source
