@@ -50,9 +50,11 @@ The algorithm itself can be controlled using two parameters `k` and `d`. Both of
 
 2D plotting plots the result in a 2D texture. A total of 4 parameters control the drawing:
 - `use_map`: If True, draws an underlying map. Recommended for data that have precise longitude and latitude. Default True.
-- `plot_3d`: If True, plots curves with spherical projection for display on a sphere. Default False.
+- `plot_3d`: If True, plots curves with spherical projection for display on a sphere. Default False. Texture is saved as "spherical_texture.png"
 - `n`: Number of sampling points for Beziér curves. Default 100.
 - `smoothing`: Level of recursive smoothing. Default 2.
+
+ 
 
 # Demo
 
