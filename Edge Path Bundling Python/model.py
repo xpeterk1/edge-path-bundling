@@ -27,8 +27,15 @@ class Node:
         self.previous = None
         self.previous_edge = None
 
-    def distance_to(self, other) -> float:
-        return math.sqrt(pow(other.longitude - self.longitude, 2) + pow(other.latitude - self.latitude, 2))
+    def distance_to(self, other, spherical = False) -> float:
+        if spherical: 
+            thetaS = (math.pi/2) - self.latitude
+            thetaD = (math.pi/2) - other.latitude
+            phiS = self.longitude
+            phiD = other.longitude
+            return math.sqrt(2 - 2*(math.sin(thetaS)*math.sin(thetaD)*math.cos(phiS-phiD) + math.cos(thetaS)*math.cos(thetaD))) 
+        else:
+            return math.sqrt(pow(other.longitude - self.longitude, 2) + pow(other.latitude - self.latitude, 2))
 
     def __lt__(self, other):
         return self.id < other.id

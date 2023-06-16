@@ -2,7 +2,7 @@ import pandas as pd
 from model import Edge, Node
 
 
-def get_airpors_data(d):
+def get_airpors_data(d, spherical = False):
     # Load data into dataframes
     nodes_list = pd.read_csv("data/airports-extended.csv")
     edges_list = pd.read_csv("data/routes-preprocessed.csv")
@@ -33,7 +33,7 @@ def get_airpors_data(d):
 
         source = nodes[edge.source]
         dest = nodes[edge.destination]
-        distance = source.distance_to(dest)
+        distance = source.distance_to(dest, spherical)
 
         edge.distance = distance
         edge.weight = pow(distance, d)

@@ -24,7 +24,7 @@ plot_3d = False  # Plot for use on sphere
 smoothing = 2  # Smoothing parameter for Bezier curves
 
 # data source
-nodes, edges = airports.get_airpors_data(d)
+nodes, edges = airports.get_airpors_data(d, plot_3d)
 # nodes, edges = migrations.get_migrations_data(d)
 
 ############################################################################################
