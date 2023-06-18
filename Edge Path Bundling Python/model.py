@@ -30,8 +30,8 @@ class Node:
 
     def distance_to(self, other, spherical = False) -> float:
         if spherical:
-            p = to_sphere([[self.longitude], [self.latitude]])
-            q = to_sphere([[other.longitude], [other.latitude]])
+            p = to_sphere([self.longitude, self.latitude])
+            q = to_sphere([other.longitude, other.latitude])
             alpha = np.arccos(np.dot(p,q))
             return 2*np.pi*360/alpha
         else:
