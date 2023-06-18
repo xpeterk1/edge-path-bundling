@@ -1,5 +1,6 @@
 import math
-
+import numpy as np
+from bezier.bezierSpherical import to_sphere
 
 class Edge:
 
@@ -28,12 +29,11 @@ class Node:
         self.previous_edge = None
 
     def distance_to(self, other, spherical = False) -> float:
-        if spherical: 
-            thetaS = (math.pi/2) - self.latitude
-            thetaD = (math.pi/2) - other.latitude
-            phiS = self.longitude
-            phiD = other.longitude
-            return math.sqrt(2 - 2*(math.sin(thetaS)*math.sin(thetaD)*math.cos(phiS-phiD) + math.cos(thetaS)*math.cos(thetaD))) 
+        if spherical:
+            p = to_sphere([[self.longitude], [self.latitude]])
+            q = to_sphere([[other.longitude], [other.latitude]])
+            alpha = np.arccos(np.dot(p,q))
+            return 2*np.pi*360/alpha
         else:
             return math.sqrt(pow(other.longitude - self.longitude, 2) + pow(other.latitude - self.latitude, 2))
 
